@@ -10,11 +10,6 @@ import tensorflow as tf
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.preprocessing.text import tokenizer_from_json
 
-
-# =========================
-# FILE PATHS
-# =========================
-
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 DATA_FILE = os.path.join(
@@ -49,41 +44,21 @@ COMPARISON_FILE = os.path.join(
     BASE_DIR, "results", "comparison.csv"
 )
 
-
-# =========================
-# STREAMLIT CONFIGURATION
-# =========================
-
 st.set_page_config(
-    page_title="BrandPulse AI",
+    page_title="AirSentiment AI",
     page_icon="📊",
     layout="wide"
 )
 
-
-# =========================
-# LOAD DATA
-# =========================
-
 @st.cache_data
 def load_data():
     return pd.read_csv(DATA_FILE)
-
-
-# =========================
-# LOAD CLASSICAL MODEL
-# =========================
 
 @st.cache_resource
 def load_classical():
     vectorizer = joblib.load(TFIDF_FILE)
     model = joblib.load(CLASSICAL_FILE)
     return vectorizer, model
-
-
-# =========================
-# LOAD LSTM MODEL
-# =========================
 
 @st.cache_resource
 def load_lstm():
@@ -101,12 +76,7 @@ def load_lstm():
 
     return model, tokenizer, labels, config
 
-
-# =========================
-# PROJECT HEADER
-# =========================
-
-st.title("✈️ BrandPulse AI")
+st.title("✈️ AirSentiment AI")
 
 st.subheader("Twitter US Airline Sentiment Analysis")
 
@@ -116,11 +86,6 @@ st.write(
 )
 
 st.divider()
-
-
-# =========================
-# CHECK REQUIRED FILES
-# =========================
 
 missing = [
     p for p in [
@@ -151,17 +116,7 @@ if missing:
 
     st.stop()
 
-
-# =========================
-# LOAD DATA
-# =========================
-
 df = load_data()
-
-
-# =========================
-# SIDEBAR CONTROLS
-# =========================
 
 st.sidebar.header("🎛️ Dashboard Controls")
 
@@ -184,11 +139,6 @@ airline_filter = st.sidebar.selectbox(
     airlines
 )
 
-
-# =========================
-# FILTER DATA
-# =========================
-
 if airline_filter != "All":
 
     filtered = df[
@@ -198,11 +148,6 @@ if airline_filter != "All":
 else:
 
     filtered = df.copy()
-
-
-# =====================================================
-# ANALYZE YOUR OWN TWEET - MOVED TO TOP
-# =====================================================
 
 st.header("🔎 Analyze Your Own Tweet")
 
@@ -232,9 +177,7 @@ if st.button(
             "Please enter a tweet to analyze."
         )
 
-    # -------------------------
-    # CLASSICAL MODEL
-    # -------------------------
+    
 
     elif model_choice.startswith("Classical"):
 
@@ -260,9 +203,6 @@ if st.button(
             f"**{probability:.2%}**"
         )
 
-    # -------------------------
-    # LSTM MODEL
-    # -------------------------
 
     else:
 
@@ -301,11 +241,6 @@ if st.button(
 
 st.divider()
 
-
-# =========================
-# KPI CARDS
-# =========================
-
 st.header("📊 Dataset Overview")
 
 c1, c2, c3, c4 = st.columns(4)
@@ -333,17 +268,7 @@ c4.metric(
 
 st.divider()
 
-
-# =========================
-# SENTIMENT VISUALIZATION
-# =========================
-
 left, right = st.columns(2)
-
-
-# -------------------------
-# SENTIMENT DISTRIBUTION
-# -------------------------
 
 with left:
 
@@ -369,10 +294,6 @@ with left:
         use_container_width=True
     )
 
-
-# -------------------------
-# AIRLINE-WISE SENTIMENT
-# -------------------------
 
 with right:
 
@@ -407,11 +328,6 @@ with right:
 
 
 st.divider()
-
-
-# =========================
-# SENTIMENT TREND
-# =========================
 
 st.header("📈 Sentiment Trend")
 
@@ -464,11 +380,6 @@ else:
 
 st.divider()
 
-
-# =========================
-# LIVE TWEET STREAM
-# =========================
-
 st.header("🔴 Simulated Live Tweet Stream")
 
 st.caption(
@@ -504,10 +415,6 @@ if st.session_state.stream_running:
     ).copy()
 
 
-    # -------------------------
-    # CLASSICAL PREDICTION
-    # -------------------------
-
     if model_choice.startswith("Classical"):
 
         vectorizer, model = load_classical()
@@ -519,11 +426,6 @@ if st.session_state.stream_running:
         live["predicted_sentiment"] = (
             model.predict(X)
         )
-
-
-    # -------------------------
-    # LSTM PREDICTION
-    # -------------------------
 
     else:
 
@@ -594,11 +496,6 @@ if st.session_state.stream_running:
 
 st.divider()
 
-
-# =========================
-# MODEL PERFORMANCE
-# =========================
-
 st.header("📈 Model Performance Comparison")
 
 if os.path.exists(COMPARISON_FILE):
@@ -623,13 +520,8 @@ else:
 
 st.divider()
 
-
-# =========================
-# PROJECT FOOTER
-# =========================
-
 st.caption(
-    "✈️ BrandPulse AI | "
+    "✈️ AirSentiment AI | "
     "NLP + TF-IDF + Logistic Regression + "
     "LSTM + Streamlit"
 )
