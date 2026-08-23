@@ -1,0 +1,5 @@
+{
+  "max_words": 20000,
+  "max_len": 60,
+  "vocab_size": 10215
+}
